@@ -3,6 +3,8 @@
 #include "Trie.hpp"
 #include "Patricia.hpp"
 #include "Splay.hpp"
+#include "Treap.hpp"
+
 
 
 using namespace std;
@@ -77,5 +79,34 @@ int main() {
 
     cout << "Remove 999 (nao existe): " << splay.remover(999) << endl; // false
 
+
+    // ÁRVORE TREAP
+    cout << "\n\n   --- ÁRVORE TREAP ---   " << endl;
+    Treap treap;
+
+    treap.inserir(50);
+    treap.inserir(30);
+    treap.inserir(70);
+    treap.inserir(20);
+    treap.inserir(40);
+    treap.inserir(60);
+    treap.inserir(80);
+
+    // Imprime true/false ao invés de 1/0
+    cout << boolalpha;
+    cout << "Busca 40: " << treap.buscar(40) << endl;   // true
+    cout << "Busca 100: " << treap.buscar(100) << endl; // false (nao existe)
+
+    cout << "Remove 30 (tem filhos): " << treap.remover(30) << endl; // true
+    cout << "Busca 30 apos remocao: " << treap.buscar(30) << endl;   // false
+    cout << "Busca 20 apos remocao de 30: " << treap.buscar(20) << endl; // true
+    cout << "Busca 40 apos remocao de 30: " << treap.buscar(40) << endl; // true
+
+    cout << "Remove 999 (nao existe): " << treap.remover(999) << endl; // false
+
+    treap.inserir(30); // reinsere, testando se a arvore continua consistente
+    cout << "Busca 30 apos reinsercao: " << treap.buscar(30) << endl; // true
+
+    
     return 0;
 }
