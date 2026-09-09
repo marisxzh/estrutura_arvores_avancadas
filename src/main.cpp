@@ -4,7 +4,7 @@
 #include "Patricia.hpp"
 #include "Splay.hpp"
 #include "Treap.hpp"
-
+#include "KDTree.hpp"
 
 
 using namespace std;
@@ -108,5 +108,41 @@ int main() {
     cout << "Busca 30 apos reinsercao: " << treap.buscar(30) << endl; // true
 
     
+    // ARVORE KD-TREE
+    cout << "\n\n   --- ÁRVORE KD-TREE ---   " << endl;
+    KDTree arvore;
+
+    arvore.inserir(30, 40);
+    arvore.inserir(5, 25);
+    arvore.inserir(70, 70);
+    arvore.inserir(10, 12);
+    arvore.inserir(50, 30);
+
+    // Imprime true/false ao invés de 1/0
+    cout << boolalpha;
+    cout << "Busca (10,12): " << arvore.buscar(10, 12) << endl;   // true
+    cout << "Busca (99,99): " << arvore.buscar(99, 99) << endl;   // false
+
+    KDNo* proximo = arvore.vizinhoMaisProximo(12, 15);
+    if (proximo != nullptr) {
+        cout << "Vizinho mais proximo de (12,15): (" << proximo->x << "," << proximo->y << ")" << endl;
+        // esperado: (10,12), por ser o ponto mais perto de (12,15)
+    }
+
+    vector<KDNo*> regiao = arvore.buscarRegiao(0, 40, 0, 50);
+    cout << "Pontos na regiao [0,40]x[0,50]:" << endl;
+    for (KDNo* ponto : regiao) {
+        cout << "  (" << ponto->x << "," << ponto->y << ")" << endl;
+    }
+    // esperado: (30,40), (5,25), (10,12)
+
+    cout << "Remove (30,40): " << arvore.remover(30, 40) << endl; // true
+    cout << "Busca (30,40) apos remocao: " << arvore.buscar(30, 40) << endl; // false
+    cout << "Busca (70,70) apos remocao de (30,40): " << arvore.buscar(70, 70) << endl; // true
+
+    cout << "Remove (99,99) (nao existe): " << arvore.remover(99, 99) << endl; // false
+
+
+
     return 0;
 }
