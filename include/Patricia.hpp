@@ -34,6 +34,8 @@ class Patricia {
 
         bool removerAux(PatriciaNo* atual, const string& palavra, size_t pos);
 
+        
+
     public:
 
         // inicia a árvore com um nó raiz vazio

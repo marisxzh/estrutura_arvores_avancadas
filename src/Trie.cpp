@@ -162,5 +162,7 @@ void Trie::destruirAux(TrieNo* atual) {
 
 
 bool Trie::remover(const string& palavra) {
+
     return removerAux(raiz, palavra, 0);
 }
+

@@ -51,6 +51,7 @@ class Trie {
         
         bool remover(const string& palavra);
 
+        
 };
 
 
