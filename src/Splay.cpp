@@ -3,6 +3,7 @@
 using namespace std;
 
 
+
 // inicializa o nó com a chave recebida
 // por padrão, o nó nasce sem pai e sem filhos
 SplayNo::SplayNo(int valor) {
@@ -162,6 +163,8 @@ void Splay::splay(SplayNo* no) {
 // insere o valor na árvore, seguindo a lógica de BST, e depois faz o splay do nó inserido
 void Splay::inserir(int valor) {
 
+    comparacoes = 0; // [MÉTRICAS]
+
     // caso a árvore esteja vazia, o novo nó vira a raiz direto
     if (raiz == nullptr) {
         raiz = new SplayNo(valor);
@@ -174,6 +177,8 @@ void Splay::inserir(int valor) {
 
     // desce a árvore, comparando a chave, até achar um lugar vazio
     while (atual != nullptr) {
+
+        comparacoes++; // [MÉTRICAS]
 
         // guarda o pai antes de descer para o próximo nó
         pai = atual;
@@ -214,6 +219,8 @@ void Splay::inserir(int valor) {
 // busca o valor na árvore; sempre faz o splay do último nó visitado, mesmo se não encontrar (propriedade da árvore splay)
 bool Splay::buscar(int valor) {
 
+    comparacoes = 0; // [MÉTRICAS]
+
     // ponteiro para percorrer a árvore, começando da raiz
     SplayNo* atual = raiz;
     // guarda o último nó visitado, mesmo em caso de falha
@@ -221,6 +228,8 @@ bool Splay::buscar(int valor) {
 
     // desce a árvore, comparando a chave, até achar o valor ou chegar em nullptr
     while (atual != nullptr) {
+
+        comparacoes++; // [MÉTRICAS]
 
         // guarda o último nó visitado
         ultimo = atual;
@@ -254,6 +263,8 @@ bool Splay::buscar(int valor) {
 // remove o valor da árvore, usando splay para trazer o nó à raiz e depois juntar as subárvores
 bool Splay::remover(int valor) {
 
+    comparacoes = 0; // [MÉTRICAS]
+
     // primeiro, busca o valor; se não encontrar, retorna false
     if (!buscar(valor)) {
         return false; 
@@ -274,6 +285,7 @@ bool Splay::remover(int valor) {
         // acha o maior valor da subárvore esquerda, e o traz para a raiz dela
         SplayNo* maiorEsquerda = esquerda;
         while (maiorEsquerda->dir != nullptr) {
+            comparacoes++; // [MÉTRICAS]
             maiorEsquerda = maiorEsquerda->dir;
         }
 
@@ -297,4 +309,25 @@ bool Splay::remover(int valor) {
 
     delete antigaRaiz;
     return true;
+}
+
+
+// [MÉTRICAS]
+long long Splay::getComparacoes() const {
+    return comparacoes;
+}
+
+
+int Splay::alturaAux(SplayNo* no) {
+    if (no == nullptr) {
+        return -1; // convenção: árvore vazia = altura -1, um nó só = altura 0
+    }
+    int alturaEsq = alturaAux(no->esq);
+    int alturaDir = alturaAux(no->dir);
+    return 1 + (alturaEsq > alturaDir ? alturaEsq : alturaDir);
+}
+
+
+int Splay::obterAltura() {
+    return alturaAux(raiz);
 }

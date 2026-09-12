@@ -43,6 +43,8 @@ void KDTree::destruirAux(KDNo* no) {
 // função auxiliar recursiva: desce alternando o eixo de comparação a cada nível
 KDNo* KDTree::inserirAux(KDNo* no, int x, int y, int profundidade) {
 
+    comparacoes++; // [MÉTRICAS]
+
     // 1. achou o lugar vazio -> cria o nó aqui
     if (no == nullptr) {
         return new KDNo(x, y);
@@ -74,12 +76,15 @@ KDNo* KDTree::inserirAux(KDNo* no, int x, int y, int profundidade) {
 
 // insere o ponto (x, y) na árvore, começando na profundidade 0
 void KDTree::inserir(int x, int y) {
+    comparacoes = 0; // [MÉTRICAS]
     raiz = inserirAux(raiz, x, y, 0);
 }
 
 
 // função auxiliar recursiva: desce alternando o eixo de comparação, procurando o ponto exato
 bool KDTree::buscarAux(KDNo* no, int x, int y, int profundidade) {
+
+    comparacoes++; // [MÉTRICAS]
 
     // não encontrou -> chegou a um ponto vazio
     if (no == nullptr) {
@@ -114,12 +119,17 @@ bool KDTree::buscarAux(KDNo* no, int x, int y, int profundidade) {
 
 // busca o ponto (x, y) na árvore
 bool KDTree::buscar(int x, int y) {
+
+    comparacoes = 0; // [MÉTRICAS]
+
     return buscarAux(raiz, x, y, 0);
 }
 
 
 // encontra, dentro da subárvore, o nó com menor valor no eixo indicado (0 = X, 1 = Y)
 KDNo* KDTree::encontrarMinimo(KDNo* no, int eixoAlvo, int profundidade) {
+
+    comparacoes++; // [MÉTRICAS]
 
     // se achar um nó nulo, retorna nulo
     if (no == nullptr) {
@@ -166,6 +176,8 @@ KDNo* KDTree::encontrarMinimo(KDNo* no, int eixoAlvo, int profundidade) {
 
 // função auxiliar recursiva: localiza o ponto e o remove, usando o mínimo do eixo como substituto
 KDNo* KDTree::removerAux(KDNo* no, int x, int y, int profundidade) {
+
+    comparacoes++; // [MÉTRICAS]
 
     if (no == nullptr) {
         return nullptr;
@@ -233,6 +245,8 @@ KDNo* KDTree::removerAux(KDNo* no, int x, int y, int profundidade) {
 // remove o ponto (x, y) da árvore, caso exista
 bool KDTree::remover(int x, int y) {
 
+    comparacoes = 0; // [MÉTRICAS]
+
     if (!buscar(x, y)) {
         return false;
     }
@@ -244,6 +258,8 @@ bool KDTree::remover(int x, int y) {
 
 // função auxiliar recursiva: mantém o melhor candidato encontrado até agora (por referência)
 void KDTree::vizinhoMaisProximoAux(KDNo* no, int x, int y, int profundidade, KDNo*& melhor, double& melhorDistancia) {
+
+    comparacoes++; // [MÉTRICAS]
 
     // se achar nulo, retorna (não há nada a fazer)
     if (no == nullptr) {
@@ -294,6 +310,9 @@ void KDTree::vizinhoMaisProximoAux(KDNo* no, int x, int y, int profundidade, KDN
 
 // retorna o ponto mais próximo de (x, y), ou nullptr se a árvore estiver vazia
 KDNo* KDTree::vizinhoMaisProximo(int x, int y) {
+
+    comparacoes = 0; // [MÉTRICAS]
+
     KDNo* melhor = nullptr;
     double melhorDistancia = 0.0;
 
@@ -306,6 +325,8 @@ KDNo* KDTree::vizinhoMaisProximo(int x, int y) {
 
 // função auxiliar recursiva: acumula no vetor todos os pontos dentro do retângulo dado
 void KDTree::buscarRegiaoAux(KDNo* no, int xMin, int xMax, int yMin, int yMax, int profundidade, std::vector<KDNo*>& resultado) {
+
+    comparacoes++; // [MÉTRICAS]
 
     if (no == nullptr) {
         return;
@@ -340,10 +361,31 @@ void KDTree::buscarRegiaoAux(KDNo* no, int xMin, int xMax, int yMin, int yMax, i
 
 // retorna todos os pontos dentro do retângulo [xMin,xMax] x [yMin,yMax]
 vector<KDNo*> KDTree::buscarRegiao(int xMin, int xMax, int yMin, int yMax) {
+
+    comparacoes = 0; // [MÉTRICAS]
+
     vector<KDNo*> resultado;
     buscarRegiaoAux(raiz, xMin, xMax, yMin, yMax, 0, resultado);
     return resultado;
 }
 
 
+// [MÉTRICAS]
+long long KDTree::getComparacoes() const {
+    return comparacoes;
+}
 
+
+int KDTree::alturaAux(KDNo* no) {
+    if (no == nullptr) {
+        return -1;
+    }
+    int alturaEsq = alturaAux(no->esq);
+    int alturaDir = alturaAux(no->dir);
+    return 1 + (alturaEsq > alturaDir ? alturaEsq : alturaDir);
+}
+
+
+int KDTree::obterAltura() {
+    return alturaAux(raiz);
+}

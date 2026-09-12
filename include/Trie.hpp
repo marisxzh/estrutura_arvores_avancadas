@@ -17,6 +17,7 @@ struct TrieNo {
 
     TrieNo();
 
+
 };
 
 // classe principal que vai gerenciar a árvore
@@ -32,6 +33,10 @@ class Trie {
 
         // auxiliar para o destrutor, que vai limpar a árvore recursivamente 
         void destruirAux(TrieNo* atual);
+
+        // [MÉTRICAS]
+        long long comparacoes = 0;
+        int alturaAux(TrieNo* atual);
 
     // métodos para inserir, buscar e remover palavras da árvore
     public:
@@ -50,6 +55,10 @@ class Trie {
         bool comecaCom(const string& prefixo);
         
         bool remover(const string& palavra);
+
+        // [MÉTRICAS]
+        long long getComparacoes() const;
+        int obterAltura();
 
         
 };

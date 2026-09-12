@@ -1,148 +1,63 @@
 #include <iostream>
-#include <string>
-#include "Trie.hpp"
-#include "Patricia.hpp"
-#include "Splay.hpp"
-#include "Treap.hpp"
-#include "KDTree.hpp"
-
+#include <vector>
+#include "Dataset.hpp"
+#include "Metricas.hpp"
+#include "Experimentos.hpp"
 
 using namespace std;
 
 
+const vector<int> TAMANHOS = {1000, 10000, 100000, 1000000};
+const vector<int> TAMANHOS_TRIE = {1000, 10000, 100000};
+const unsigned int SEED = 42;
+const string CAMINHO_HEADLINES = "input.csv"; // ajuste para o caminho real do seu arquivo
+
+
 int main() {
+    Metricas::Coletor coletor;
+
+    cout << "Iniciando experimentos..." << endl;
+
+    for (int tamanho : TAMANHOS_TRIE) {
 
 
-    // ARVORE TRIE
-    Trie trie;
-
-
-    cout << "\n\n   --- ÁRVORE TRIE ---   " << endl;
-
-    trie.inserir("casa");
-    trie.inserir("casal");
-    trie.inserir("carro");
-
-    // Imprime true/false ao invés de 1/0
-    cout << boolalpha; 
-    cout << "Busca 'casa': " << trie.buscar("casa") << endl;     // true
-    cout << "Busca 'cas': " << trie.buscar("cas") << endl;       // false
-    cout << "Comeca com 'ca': " << trie.comecaCom("ca") << endl; // true
-
-    trie.remover("casa");
-    cout << "Busca 'casa' apos remocao: " << trie.buscar("casa") << endl;  // false
-    cout << "Busca 'casal' apos remocao de 'casa': " << trie.buscar("casal") << endl; // true
-
-
-
-    cout << "\n\n   --- ÁRVORE PATRICIA ---   " << endl;
-
-
-
-    // ARVORE PATRICIA
-    Patricia patricia;
-
-    
-    patricia.inserir("comer");
-    patricia.inserir("comida");
-    patricia.inserir("com");
-
-    // Imprime true/false ao invés de 1/0
-    cout << boolalpha;
-    cout << "Busca 'comer': " << patricia.buscar("comer") << endl;   // true
-    cout << "Busca 'com': " << patricia.buscar("com") << endl;       // true
-    cout << "Busca 'co': " << patricia.buscar("co") << endl;         // false
-
-    patricia.remover("com");
-    cout << "Busca 'com' apos remocao: " << patricia.buscar("com") << endl;     // false
-    cout << "Busca 'comer' apos remocao de 'com': " << patricia.buscar("comer") << endl; // true
-
-
-    // ARVORE SPLAY
-    cout << "\n\n   --- ÁRVORE SPLAY ---   " << endl;
-    Splay splay;
-
-    splay.inserir(50);
-    splay.inserir(30);
-    splay.inserir(70);
-    splay.inserir(20);
-    splay.inserir(40);
-
-    // Imprime true/false ao invés de 1/0
-    cout << boolalpha;
-    cout << "Busca 40: " << splay.buscar(40) << endl;   // true (e 40 deve virar a raiz)
-    cout << "Busca 100: " << splay.buscar(100) << endl; // false (nao existe)
-
-    cout << "Remove 30: " << splay.remover(30) << endl; // true
-    cout << "Busca 30 apos remocao: " << splay.buscar(30) << endl; // false
-    cout << "Busca 20 apos remocao de 30: " << splay.buscar(20) << endl; // true
-
-    cout << "Remove 999 (nao existe): " << splay.remover(999) << endl; // false
-
-
-    // ÁRVORE TREAP
-    cout << "\n\n   --- ÁRVORE TREAP ---   " << endl;
-    Treap treap;
-
-    treap.inserir(50);
-    treap.inserir(30);
-    treap.inserir(70);
-    treap.inserir(20);
-    treap.inserir(40);
-    treap.inserir(60);
-    treap.inserir(80);
-
-    // Imprime true/false ao invés de 1/0
-    cout << boolalpha;
-    cout << "Busca 40: " << treap.buscar(40) << endl;   // true
-    cout << "Busca 100: " << treap.buscar(100) << endl; // false (nao existe)
-
-    cout << "Remove 30 (tem filhos): " << treap.remover(30) << endl; // true
-    cout << "Busca 30 apos remocao: " << treap.buscar(30) << endl;   // false
-    cout << "Busca 20 apos remocao de 30: " << treap.buscar(20) << endl; // true
-    cout << "Busca 40 apos remocao de 30: " << treap.buscar(40) << endl; // true
-
-    cout << "Remove 999 (nao existe): " << treap.remover(999) << endl; // false
-
-    treap.inserir(30); // reinsere, testando se a arvore continua consistente
-    cout << "Busca 30 apos reinsercao: " << treap.buscar(30) << endl; // true
-
-    
-    // ARVORE KD-TREE
-    cout << "\n\n   --- ÁRVORE KD-TREE ---   " << endl;
-    KDTree arvore;
-
-    arvore.inserir(30, 40);
-    arvore.inserir(5, 25);
-    arvore.inserir(70, 70);
-    arvore.inserir(10, 12);
-    arvore.inserir(50, 30);
-
-    // Imprime true/false ao invés de 1/0
-    cout << boolalpha;
-    cout << "Busca (10,12): " << arvore.buscar(10, 12) << endl;   // true
-    cout << "Busca (99,99): " << arvore.buscar(99, 99) << endl;   // false
-
-    KDNo* proximo = arvore.vizinhoMaisProximo(12, 15);
-    if (proximo != nullptr) {
-        cout << "Vizinho mais proximo de (12,15): (" << proximo->x << "," << proximo->y << ")" << endl;
-        // esperado: (10,12), por ser o ponto mais perto de (12,15)
+        vector<string> dadosString = Dataset::carregarStrings(CAMINHO_HEADLINES, tamanho);
+        
+        if (!dadosString.empty()) {
+            cout << "  Trie..." << endl;
+            Experimentos::testarTrie(dadosString, coletor);
+        
+        } else {
+            cout << "  Aviso: arquivo de headlines nao encontrado ou vazio, pulando grupo string." << endl;
+        }
+        
     }
 
-    vector<KDNo*> regiao = arvore.buscarRegiao(0, 40, 0, 50);
-    cout << "Pontos na regiao [0,40]x[0,50]:" << endl;
-    for (KDNo* ponto : regiao) {
-        cout << "  (" << ponto->x << "," << ponto->y << ")" << endl;
+
+    for (int tamanho : TAMANHOS) {
+        cout << "Tamanho: " << tamanho << endl;
+
+        vector<string> dadosString = Dataset::carregarStrings(CAMINHO_HEADLINES, tamanho);
+        if (!dadosString.empty()) {
+            cout << "  Patricia..." << endl;
+            Experimentos::testarPatricia(dadosString, coletor);
+        } else {
+            cout << "  Aviso: arquivo de headlines nao encontrado ou vazio, pulando grupo string." << endl;
+        }
+
+        vector<int> dadosInt = Dataset::gerarInteiros(tamanho, SEED);
+        cout << "  Splay..." << endl;
+        Experimentos::testarSplay(dadosInt, coletor);
+        cout << "  Treap..." << endl;
+        Experimentos::testarTreap(dadosInt, coletor);
+
+        vector<Dataset::Ponto> dadosPontos = Dataset::gerarPontos(tamanho, SEED);
+        cout << "  KDTree..." << endl;
+        Experimentos::testarKDTree(dadosPontos, coletor);
     }
-    // esperado: (30,40), (5,25), (10,12)
 
-    cout << "Remove (30,40): " << arvore.remover(30, 40) << endl; // true
-    cout << "Busca (30,40) apos remocao: " << arvore.buscar(30, 40) << endl; // false
-    cout << "Busca (70,70) apos remocao de (30,40): " << arvore.buscar(70, 70) << endl; // true
-
-    cout << "Remove (99,99) (nao existe): " << arvore.remover(99, 99) << endl; // false
-
-
+    coletor.exportarCSV("resultados.csv");
+    cout << "Concluido. Resultados em resultados.csv" << endl;
 
     return 0;
 }

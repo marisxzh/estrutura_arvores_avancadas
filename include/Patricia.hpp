@@ -34,7 +34,9 @@ class Patricia {
 
         bool removerAux(PatriciaNo* atual, const string& palavra, size_t pos);
 
-        
+        // [MÉTRICAS]
+        long long comparacoes = 0;
+        int alturaAux(PatriciaNo* atual);
 
     public:
 
@@ -49,6 +51,10 @@ class Patricia {
         bool buscar(const string& palavra);
 
         bool remover(const string& palavra);
+
+        // [MÉTRICAS]
+        long long getComparacoes() const;
+        int obterAltura();
 
 };
 

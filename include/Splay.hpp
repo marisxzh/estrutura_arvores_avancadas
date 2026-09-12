@@ -35,6 +35,10 @@ class Splay {
         // auxiliar para o destrutor, que vai limpar a árvore recursivamente
         void destruirAux(SplayNo* atual);
 
+        // [MÉTRICAS]
+        long long comparacoes = 0;
+        int alturaAux(SplayNo* no);
+
     public:
 
         // inicia a árvore vazia (sem nó raiz)
@@ -50,8 +54,11 @@ class Splay {
 
         bool remover(int valor);
 
+        // [MÉTRICAS]
+        long long getComparacoes() const;
+        int obterAltura();
+        
 };
-
 
 
 #endif

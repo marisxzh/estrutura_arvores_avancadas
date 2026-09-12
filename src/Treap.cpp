@@ -77,6 +77,8 @@ TreapNo* Treap::rotacionarEsquerda(TreapNo* no) {
 // função auxiliar recursiva: desce como uma BST, insere, e corrige o heap subindo
 TreapNo* Treap::inserirAux(TreapNo* no, int chave, int prioridade) {
 
+    comparacoes++; // [MÉTRICAS]
+
     // 1. achou o lugar vazio -> cria o nó aqui
     if (no == nullptr) {
         return new TreapNo(chave, prioridade);
@@ -109,6 +111,8 @@ TreapNo* Treap::inserirAux(TreapNo* no, int chave, int prioridade) {
 
 // insere a chave na árvore, sorteando uma prioridade aleatória internamente
 void Treap::inserir(int chave) {
+
+    comparacoes = 0; // [MÉTRICAS]
     int prioridade = rand();
     raiz = inserirAux(raiz, chave, prioridade);
 }
@@ -116,6 +120,8 @@ void Treap::inserir(int chave) {
 
 // função auxiliar recursiva: desce como uma BST comum, ignorando completamente a prioridade
 bool Treap::buscarAux(TreapNo* no, int chave) {
+
+    comparacoes++; // [MÉTRICAS]
 
     // 1. chegou a um ponto vazio -> não encontrou
     if (no == nullptr) {
@@ -139,12 +145,17 @@ bool Treap::buscarAux(TreapNo* no, int chave) {
 
 // busca a chave na árvore
 bool Treap::buscar(int chave) {
+
+    comparacoes = 0; // [MÉTRICAS]
+
     return buscarAux(raiz, chave);
 }
 
 
 // função auxiliar recursiva: localiza a chave e a remove, "empurrando-a" para baixo antes
 TreapNo* Treap::removerAux(TreapNo* no, int chave) {
+
+    comparacoes++; // [MÉTRICAS]
 
     // não encontrou a chave -> não há nada a remover
     if (no == nullptr) {
@@ -195,6 +206,8 @@ TreapNo* Treap::removerAux(TreapNo* no, int chave) {
 // remove a chave da árvore, caso exista
 bool Treap::remover(int chave) {
 
+    comparacoes = 0; // [MÉTRICAS]
+
     if (!buscar(chave)) {
         return false; // não encontrou a chave -> não removeu
     }
@@ -202,4 +215,25 @@ bool Treap::remover(int chave) {
     // chama a função auxiliar recursiva para remover a chave, e atualiza a raiz da árvore
     raiz = removerAux(raiz, chave);
     return true;
+}
+
+
+// [MÉTRICAS]
+long long Treap::getComparacoes() const {
+    return comparacoes;
+}
+
+
+int Treap::alturaAux(TreapNo* no) {
+    if (no == nullptr) {
+        return -1;
+    }
+    int alturaEsq = alturaAux(no->esq);
+    int alturaDir = alturaAux(no->dir);
+    return 1 + (alturaEsq > alturaDir ? alturaEsq : alturaDir);
+}
+
+
+int Treap::obterAltura() {
+    return alturaAux(raiz);
 }

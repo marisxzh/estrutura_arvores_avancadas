@@ -3,6 +3,7 @@
 
 using namespace std;
 
+
 // estrutura do nó
 struct TreapNo {
 
@@ -36,6 +37,10 @@ class Treap {
         bool buscarAux(TreapNo* no, int chave);
         void destruirAux(TreapNo* no);
 
+        // [MÉTRICAS]
+        long long comparacoes = 0;
+        int alturaAux(TreapNo* no);
+
     public:
 
         // inicia a árvore vazia (sem nó raiz)
@@ -49,6 +54,10 @@ class Treap {
         bool buscar(int chave);
 
         bool remover(int chave);
+
+        // [MÉTRICAS]
+        long long getComparacoes() const;
+        int obterAltura();
 
 };
 

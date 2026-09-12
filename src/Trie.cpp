@@ -18,6 +18,8 @@ Trie::Trie() {
 // insere a palavra letra por letra
 void Trie::inserir(const string& palavra){
 
+    comparacoes = 0; // [MÉTRICAS]
+
     // cria um ponteiro auxiliar, ele aponta pra o mesmo lugar que a raiz está apontando
     TrieNo* atual = raiz;
 
@@ -25,6 +27,7 @@ void Trie::inserir(const string& palavra){
     // laço para passar linha por linha da palavra
     for (char letra : palavra) {
 
+        comparacoes++; // [MÉTRICAS]
 
         // procura a letra no mapa de filhos do nó atual, se não encontrar, cria um novo nó
         if (atual->filho.find(letra) == atual->filho.end()) {
@@ -45,11 +48,15 @@ void Trie::inserir(const string& palavra){
 // busca a palavra letra por letra
 bool Trie::buscar(const string& palavra) {
 
+    comparacoes = 0; // [MÉTRICAS]
+
     // cria um ponteiro auxiliar, ele aponta pra o mesmo lugar que a raiz está apontando
     TrieNo* atual = raiz;
 
     // laço para buscar letra por letra da palavra
     for (char letra : palavra) {
+
+        comparacoes++; // [MÉTRICAS]
 
         // procura a letra no mapa de filhos do nó atual, se não encontrar, retorna false
         if (atual->filho.find(letra) == atual->filho.end()) {
@@ -67,12 +74,16 @@ bool Trie::buscar(const string& palavra) {
 
 
 bool Trie::comecaCom(const string& prefixo) {
+    
+    comparacoes = 0; // [MÉTRICAS]
 
     // cria um ponteiro auxiliar, ele aponta pra o mesmo lugar que a raiz está apontando
     TrieNo* atual = raiz;
 
     // laço para buscar letra por letra do prefixo
     for (char letra : prefixo) {
+
+        comparacoes++; // [MÉTRICAS]
 
         // procura a letra no mapa de filhos do nó atual, se não encontrar, retorna false
         if (atual->filho.find(letra) == atual->filho.end()) {
@@ -91,6 +102,8 @@ bool Trie::comecaCom(const string& prefixo) {
 
 // função auxiliar para remover uma palavra da árvore
 bool Trie::removerAux(TrieNo* atual, const string& palavra, int index) {
+
+    comparacoes++; // [MÉTRICAS]
 
     // se o índice for igual ao tamanho da palavra, significa que chegamos ao final da palavra
     if (index == palavra.size()) {
@@ -163,6 +176,35 @@ void Trie::destruirAux(TrieNo* atual) {
 
 bool Trie::remover(const string& palavra) {
 
+    comparacoes = 0; // [MÉTRICAS]
+
     return removerAux(raiz, palavra, 0);
 }
 
+
+// [MÉTRICAS]
+long long Trie::getComparacoes() const {
+    return comparacoes;
+}
+
+
+// [MÉTRICAS] altura = maior profundidade entre os filhos, +1 por nível
+int Trie::alturaAux(TrieNo* atual) {
+    if (atual == nullptr || atual->filho.empty()) {
+        return 0;
+    }
+
+    int maior = 0;
+    for (auto& par : atual->filho) {
+        int alturaFilho = alturaAux(par.second);
+        if (alturaFilho > maior) {
+            maior = alturaFilho;
+        }
+    }
+    return maior + 1;
+}
+
+
+int Trie::obterAltura() {
+    return alturaAux(raiz);
+}

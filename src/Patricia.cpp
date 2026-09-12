@@ -48,6 +48,8 @@ void Patricia::destruirAux(PatriciaNo* atual) {
 
 // insere a palavra na árvore, separando por trechos (quando necessário)
 void Patricia::inserir(const string& palavra) {
+    
+    comparacoes = 0; // [MÉTRICAS]
 
     // ponteiro para "andar" pela árvore
     PatriciaNo* atual = raiz;
@@ -56,6 +58,8 @@ void Patricia::inserir(const string& palavra) {
 
     // laço roda enquanto tiver coisa para inserir
     while (posicao < palavra.size()) {
+
+        comparacoes++; // [MÉTRICAS]
 
         // pega o caracter da posicaoição atual e usa para a busca do filho
         char proximo = palavra[posicao];
@@ -83,6 +87,7 @@ void Patricia::inserir(const string& palavra) {
         size_t i = 0;
         // se ainda há caracteres para comparar (tanto do label quanto da palavra) e se eles são iguais
         while (i < label.size() && posicao + i < palavra.size() && label[i] == palavra[posicao + i]) {
+            comparacoes++; // [MÉTRICAS]
             i++;
         }
 
@@ -138,11 +143,15 @@ void Patricia::inserir(const string& palavra) {
 // busca a palavra na árvore, comprimindo o caminho por trechos (labels)
 bool Patricia::buscar(const string& palavra) {
 
+    comparacoes = 0; // [MÉTRICAS]
+
     PatriciaNo* atual = raiz;
     size_t pos = 0; // quanto da "palavra" já foi consumido
 
     while (pos < palavra.size()) {
         char proximo = palavra[pos];
+
+        comparacoes++; // [MÉTRICAS]
 
         // procura o filho que começa com essa letra
         if (atual->filhos.find(proximo) == atual->filhos.end()) {
@@ -155,6 +164,7 @@ bool Patricia::buscar(const string& palavra) {
         // conta quantos caracteres do label batem com o restante da palavra
         size_t i = 0;
         while (i < label.size() && pos + i < palavra.size() && label[i] == palavra[pos + i]) {
+            comparacoes++; // [MÉTRICAS]
             i++;
         }
 
@@ -175,6 +185,8 @@ bool Patricia::buscar(const string& palavra) {
 
 // função auxiliar para remover uma palavra da árvore
 bool Patricia::removerAux(PatriciaNo* atual, const string& palavra, size_t pos) {
+
+    comparacoes++; // [MÉTRICAS]
 
     // chegamos ao fim da palavra buscada
     if (pos == palavra.size()) {
@@ -202,6 +214,7 @@ bool Patricia::removerAux(PatriciaNo* atual, const string& palavra, size_t pos) 
     // conta quantos caracteres do label batem com o restante da palavra
     size_t i = 0;
     while (i < label.size() && pos + i < palavra.size() && label[i] == palavra[pos + i]) {
+        comparacoes++; // [MÉTRICAS]
         i++;
     }
 
@@ -240,5 +253,34 @@ bool Patricia::removerAux(PatriciaNo* atual, const string& palavra, size_t pos) 
 
 
 bool Patricia::remover(const string& palavra) {
+    comparacoes = 0; // [MÉTRICAS]
+
     return removerAux(raiz, palavra, 0);
+}
+
+
+// [MÉTRICAS]
+long long Patricia::getComparacoes() const {
+    return comparacoes;
+}
+
+
+int Patricia::alturaAux(PatriciaNo* atual) {
+    if (atual == nullptr || atual->filhos.empty()) {
+        return 0;
+    }
+
+    int maior = 0;
+    for (auto& par : atual->filhos) {
+        int alturaFilho = alturaAux(par.second);
+        if (alturaFilho > maior) {
+            maior = alturaFilho;
+        }
+    }
+    return maior + 1;
+}
+
+
+int Patricia::obterAltura() {
+    return alturaAux(raiz);
 }

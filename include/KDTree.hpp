@@ -42,6 +42,10 @@ class KDTree {
         // busca por região retangular (busca espacial)
         void buscarRegiaoAux(KDNo* no, int xMin, int xMax, int yMin, int yMax, int profundidade, std::vector<KDNo*>& resultado);
 
+        // [MÉTRICAS]
+        long long comparacoes = 0;
+        int alturaAux(KDNo* no);
+
     public:
 
         // inicia a árvore vazia (sem nó raiz)
@@ -62,6 +66,10 @@ class KDTree {
         // retorna todos os pontos dentro do retângulo [xMin,xMax] x [yMin,yMax]
         vector<KDNo*> buscarRegiao(int xMin, int xMax, int yMin, int yMax);
 
+        // [MÉTRICAS]
+        long long getComparacoes() const;
+        int obterAltura();
+        
 };
 
 #endif
