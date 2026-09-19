@@ -78,7 +78,7 @@ Para cada estrutura, foram medidas as operações de inserção, busca e remoç�
 
 ## Resultados
 
-### Tempos de execução médio (ms)
+### Tempos de execução (ms)
 
 | Estrutura | n | Inserir | Buscar | Remover |
 |---|---|---|---|---|
